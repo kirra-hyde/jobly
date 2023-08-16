@@ -97,6 +97,13 @@ describe("GET /companies", function () {
   });
 });
 
+/**
+
+ * Get error if both min and max included, and min is more than max  (route)
+ * Get error if unexpected filter (route)
+ *
+ */
+
 /************************************** GET /companies/:handle */
 
 describe("GET /companies/:handle", function () {

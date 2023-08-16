@@ -87,6 +87,107 @@ describe("findAll", function () {
   });
 });
 
+/*
+* Search by name with "anderson", get right results
+* Search by name with "Anderson", get right results
+* Search by name with "Thomas and Sons", get right results
+* Search by name with "nderso", get right results
+* Search by name with "kjdskflsjgkdsl", get no results
+* Search by employee max 20, get right results (martinez-daniels)
+* Search by employee min 990, get right results (scott-smith)
+* Search by employee min 900 with name like ll, get right results (smith-llc, mueller-moore)
+* Search by name anderson and max 20, get no results
+*/
+
+describe("find all with filters", function() {
+
+  test("works: search name with C1", async function () {
+    const filters = {name: "C1"};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        handle: "c1",
+			  name: "C1",
+			  description: "Desc1",
+			  numEmployees: 1,
+			  logoUrl: "http://c1.img"
+      }
+    ]);
+  });
+
+  test("works: search name with c2", async function () {
+    const filters = {name: "c2"};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        handle: "c2",
+			  name: "C2",
+			  description: "Desc2",
+			  numEmployees: 2,
+			  logoUrl: "http://c2.img"
+      }
+    ]);
+  });
+
+  test("works: search name with nderso", async function () {
+    const filters = {name: "nderso"};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        handle: "anderson-arias-morrow",
+			  name: "Anderson, Arias and Morrow",
+			  description: "Somebody program how I. Face give away discussion view act inside. Your official relationship administration here.",
+			  numEmployees: 245,
+			  logoUrl: "/logos/logo3.png"
+      }
+    ]);
+  });
+
+  test("works: search name with arias and morrow", async function () {
+    const filters = {name: "aria and marrow"};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        handle: "anderson-arias-morrow",
+			  name: "Anderson, Arias and Morrow",
+			  description: "Somebody program how I. Face give away discussion view act inside. Your official relationship administration here.",
+			  numEmployees: 245,
+			  logoUrl: "/logos/logo3.png"
+      }
+    ]);
+  });
+
+  test("returns nothing: search name with sdfdssg", async function () {
+    const filters = {name: "sdfdssg"};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([]);
+  });
+
+  test("works: Search by employee max 20", async function () {
+    const filters = {name: "aria and marrow"};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        "handle": "martinez-daniels",
+        "name": "Martinez-Daniels",
+        "description": "Five source market nation. Drop foreign raise pass.",
+        "numEmployees": 12,
+        "logoUrl": "/logos/logo4.png"
+      }
+    ]);
+  });
+
+
+});
+
+
+
 /************************************** get */
 
 describe("get", function () {
@@ -110,6 +211,8 @@ describe("get", function () {
     }
   });
 });
+
+
 
 /************************************** update */
 
