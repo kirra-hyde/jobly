@@ -48,6 +48,7 @@ describe("authenticateJWT", function () {
 
 
 describe("ensureLoggedIn", function () {
+  // TODO: Ask why this doesn't have any expect() calls
   test("works", function () {
     const req = {};
     const res = { locals: { user: { username: "test" } } };
