@@ -51,29 +51,19 @@ class Company {
     return company;
   }
 
-  /** Find all companies.
-   *
+  /** Find all companies with an optional set of filters
+   * Supported filters are 'name', 'minEmployees', 'maxEmployees'
+   * Filter object expected in format { filterName: value }
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
   static async findAll(filter) {
-    // filter => { name: "c1", minEmployees: 2 }
-    // <== "name ILIKE '%c1%' AND num_employees > 2"
 
-    // filter => { name: "c1" }
-    // <== "name ILIKE '%c1%'"
-
-    /**
-     * n starts at 1 and increments for each column
-     * If includes name, then add clause 'name ILIKE $n'
-     * If includes minEmployees, then add clause 'num_employees >= $n
-     * If includes maxEmployees, then add clause 'num_employees <= $n
-     * Also keep track of values mapped to those $tokens AND add %'s around name value
-     */
+    // begin filtering logic
     let whereClause;
     let values = [];
     if (filter) {
-      console.log("filter was passed in:", filter)
+      // console.log("filter was passed in:", filter)
       whereClause = 'WHERE ';
       let tokenNumber = 1;
       for (let column in filter) {
@@ -97,9 +87,11 @@ class Company {
         }
         tokenNumber++;
       }
-      console.log("final where clause:", whereClause);
-      console.log("final values:", values);
+      // console.log("final where clause:", whereClause);
+      // console.log("final values:", values);
     }
+    // end filtering logic
+
     const companiesRes = await db.query(`
         SELECT handle,
                name,
