@@ -41,7 +41,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
   const user = await User.register(req.body);
   const token = createToken(user);
   return res.status(201).json({ user, token });
-});
+});      //TODO: What limits this to admins?
 
 
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
