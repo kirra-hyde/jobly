@@ -87,17 +87,7 @@ describe("findAll", function () {
   });
 });
 
-/*
-* Search by name with "anderson", get right results
-* Search by name with "Anderson", get right results
-* Search by name with "Thomas and Sons", get right results
-* Search by name with "nderso", get right results
-* Search by name with "kjdskflsjgkdsl", get no results
-* Search by employee max 20, get right results (martinez-daniels)
-* Search by employee min 990, get right results (scott-smith)
-* Search by employee min 900 with name like ll, get right results (smith-llc, mueller-moore)
-* Search by name anderson and max 20, get no results
-*/
+/************************************** findAll with filters */
 
 describe("find all with filters", function() {
 
@@ -131,34 +121,36 @@ describe("find all with filters", function() {
     ]);
   });
 
-  test("works: search name with nderso", async function () {
-    const filters = {name: "nderso"};
+  test("works: search name with 2", async function () {
+    const filters = {name: "2"};
     const results = await Company.findAll(filters);
 
     expect(results).toEqual([
       {
-        handle: "anderson-arias-morrow",
-			  name: "Anderson, Arias and Morrow",
-			  description: "Somebody program how I. Face give away discussion view act inside. Your official relationship administration here.",
-			  numEmployees: 245,
-			  logoUrl: "/logos/logo3.png"
+        handle: "c2",
+			  name: "C2",
+			  description: "Desc2",
+			  numEmployees: 2,
+			  logoUrl: "http://c2.img"
       }
     ]);
   });
 
-  test("works: search name with arias and morrow", async function () {
-    const filters = {name: "aria and marrow"};
+  test("works: search name with space in it", async function () {
+
+    const newCompany = {
+      handle: "c4",
+      name: "c 4c",
+      description: "New Description",
+      numEmployees: 1,
+      logoUrl: "http://new.img",
+    };
+    await Company.create(newCompany);
+
+    const filters = {name: "c 4"};
     const results = await Company.findAll(filters);
 
-    expect(results).toEqual([
-      {
-        handle: "anderson-arias-morrow",
-			  name: "Anderson, Arias and Morrow",
-			  description: "Somebody program how I. Face give away discussion view act inside. Your official relationship administration here.",
-			  numEmployees: 245,
-			  logoUrl: "/logos/logo3.png"
-      }
-    ]);
+    expect(results).toEqual([newCompany]);
   });
 
   test("returns nothing: search name with sdfdssg", async function () {
@@ -168,22 +160,64 @@ describe("find all with filters", function() {
     expect(results).toEqual([]);
   });
 
-  test("works: Search by employee max 20", async function () {
-    const filters = {name: "aria and marrow"};
+  test("works: search by employee max 1", async function () {
+    const filters = {maxEmployees: 1};
     const results = await Company.findAll(filters);
 
     expect(results).toEqual([
       {
-        "handle": "martinez-daniels",
-        "name": "Martinez-Daniels",
-        "description": "Five source market nation. Drop foreign raise pass.",
-        "numEmployees": 12,
-        "logoUrl": "/logos/logo4.png"
+        handle: "c1",
+			  name: "C1",
+			  description: "Desc1",
+			  numEmployees: 1,
+			  logoUrl: "http://c1.img"
       }
     ]);
   });
 
+  test("works: search by employee min 3", async function () {
+    const filters = {minEmployees: 3};
+    const results = await Company.findAll(filters);
 
+    expect(results).toEqual([
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      }
+    ]);
+  });
+
+  test("works: search min 2, and name is like 'c' ", async function () {
+    const filters = {name: "c", minEmployees: 2};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      }
+    ]);
+  });
+
+  test("returns nothing: search min 2, and name is like '1' ", async function () {
+    const filters = {name: "1", minEmployees: 2};
+    const results = await Company.findAll(filters);
+
+    expect(results).toEqual([]);
+  });
 });
 
 
