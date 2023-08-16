@@ -62,15 +62,19 @@ class Company {
     // begin filtering logic
     let whereClause;
     let values = [];
+
     if (filter) {
       // console.log("filter was passed in:", filter)
       whereClause = 'WHERE ';
       let tokenNumber = 1;
+
       for (let column in filter) {
         let value = filter[column];
+
         if (tokenNumber > 1) {
           whereClause += " AND ";
         }
+
         switch(column) {
           case 'name':
             whereClause += `name ILIKE $${tokenNumber}`;
