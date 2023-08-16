@@ -97,12 +97,42 @@ describe("GET /companies", function () {
   });
 });
 
-/**
+/************************************** GET /companies with filters */
 
- * Get error if both min and max included, and min is more than max  (route)
- * Get error if unexpected filter (route)
- *
- */
+describe("GET /companies with filters", function () {
+  test("works: search with name like 'c1' ", async function () {
+    const resp = await request(app).get(
+        "/companies?name=c1"
+      );
+    expect(resp.body).toEqual({
+      companies:
+          [
+            {
+              handle: "c1",
+              name: "C1",
+              description: "Desc1",
+              numEmployees: 1,
+              logoUrl: "http://c1.img",
+            }
+          ],
+    });
+  });
+
+  test("fails: min greater than max", async function () {
+    const resp = await request(app).get(
+        "/companies?minEmployees=2&maxEmployees=1"
+      );
+    expect(resp.status).toEqual(400);
+  });
+
+  test("fails: unexpected filter", async function () {
+    const resp = await request(app).get(
+        "/companies?areyouentertained=no"
+      );
+    expect(resp.status).toEqual(400);
+  });
+});
+
 
 /************************************** GET /companies/:handle */
 
