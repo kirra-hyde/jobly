@@ -40,6 +40,11 @@ function ensureLoggedIn(req, res, next) {
   throw new UnauthorizedError();
 }
 
+/**Middleware to use when they must be an admin.
+ *
+ * If not, raises Unauthorized.
+ */
+
 
 module.exports = {
   authenticateJWT,
