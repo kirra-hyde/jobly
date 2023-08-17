@@ -22,13 +22,14 @@ describe("sqlForPartialUpdate", function () {
     });
   });
 
-  // test("Fails: Empty update object (BadRequestError)", function () {
-  //   const dataToUpdate = {};
-  //   const jsToSql = {};
-  //   expect(() => {
-  //     sqlForPartialUpdate(dataToUpdate, jsToSql)
-  //   }).toThrow(BadRequestError);
-  // });
+  test("Works: No jsToSql passed in", function () {
+    const dataToUpdate = {firstName: 'Aliya', age: 32};
+    const result = sqlForPartialUpdate(dataToUpdate);
+    expect(result).toEqual({
+      setCols: `"firstName"=$1, "age"=$2`,
+      values: ['Aliya', 32]
+    });
+  });
 
   test("Fails: Empty update object (BadRequestError)", function() {
     try {
@@ -40,15 +41,4 @@ describe("sqlForPartialUpdate", function () {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
   })
-
-  test("Fails: Argument missing (TypeError)", function () {
-    try{
-      const dataToUpdate = {firstName: 'Aliya', age: 32};
-      sqlForPartialUpdate(dataToUpdate);
-      throw new Error("fail test, you shouldn't get here");
-
-    } catch (err) {
-      expect(err instanceof TypeError).toBeTruthy();
-    }
-  });
 });
