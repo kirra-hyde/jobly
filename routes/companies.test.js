@@ -71,8 +71,16 @@ describe("POST /companies", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  // TODO: We should test to confirm bad requests with non-admins
-  // still return 401s rather than bad data.
+  test("unauth for non-admins with invalid data", async function () {
+    const resp = await request(app)
+        .post("/companies")
+        .send({
+          ...newCompany,
+          logoUrl: "not-a-url",
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
 
 });
 
@@ -258,6 +266,16 @@ describe("PATCH /companies/:handle", function () {
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
   });
+
+  test("unauth for non-admin with invalid data", async function () {
+    const resp = await request(app)
+        .patch(`/companies/c1`)
+        .send({
+          logoUrl: "not-a-url",
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
 });
 
 /************************************** DELETE /companies/:handle */
@@ -288,5 +306,12 @@ describe("DELETE /companies/:handle", function () {
         .delete(`/companies/nope`)
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
+  });
+
+  test("unauth for non-admin and no such company", async function () {
+    const resp = await request(app)
+        .delete(`/companies/nope`)
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 });
