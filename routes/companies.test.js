@@ -118,6 +118,13 @@ describe("GET /companies with filters", function () {
     });
   });
 
+  test("works: min less than max", async function () {
+    const resp = await request(app).get(
+        "/companies?minEmployees=1&maxEmployees=2"
+      );
+    expect(resp.status).toEqual(200);
+  });
+
   test("fails: min greater than max", async function () {
     const resp = await request(app).get(
         "/companies?minEmployees=2&maxEmployees=1"

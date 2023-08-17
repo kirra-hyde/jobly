@@ -6,13 +6,14 @@ const { BadRequestError } = require("../expressError");
 /**
  * Converts an object representing updates to make in a DB table into a string
  * for use in a SET statement with $ tokens and the values for those tokens.
+ * TODO: Single example of call => response
+ *
  *
  * Expected input is two arguments:
  * - Object like {firstName: 'Aliya', age: 32}
  * -- Where 'firstName' is a column to update and 'Aliya' is the value to set.
  * - Object representing camelCase to snake_case mappings for columns
  * -- Example: { columnName: 'column_name' }
- * // TODO: Should jsToSql be required?
  *
  * Output is an object { setCols, values } where:
  * -- 'setCols' is string for use in a SQL SET statements
@@ -24,15 +25,11 @@ const { BadRequestError } = require("../expressError");
  *
  */
 
-function sqlForPartialUpdate(dataToUpdate, jsToSql) {
-  // TODO: Should we handle undefined dataToUpdate, or just bubble TypeError
-  // TODO: Should we handle undefined jsToSql, or just bubble TypeError
+function sqlForPartialUpdate(dataToUpdate, jsToSql={}) {
   const keys = Object.keys(dataToUpdate);
 
   if (keys.length === 0) throw new BadRequestError("No data");
 
-  // TODO: We could refactor this to use our camelCase to snake_case function
-  // instead of requiring a mapping be passed in by the calling function
   const cols = keys.map((colName, idx) =>
       `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );

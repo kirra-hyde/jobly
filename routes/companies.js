@@ -8,10 +8,10 @@ const express = require("express");
 const { BadRequestError } = require("../expressError");
 const { ensureLoggedIn } = require("../middleware/auth");
 const Company = require("../models/company");
-const isDataValid = require("../helpers/validateFindAllFilter");
 
 const companyNewSchema = require("../schemas/companyNew.json");
 const companyUpdateSchema = require("../schemas/companyUpdate.json");
+const companyFilterSchema = require("../schemas/companyFilter.json");
 
 const router = new express.Router();
 
@@ -52,10 +52,35 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
+  // convert string values to ints for validation
+  // have to copy it b/c req.query is immutable
+  const queryParams = req.query;
+  if ("minEmployees" in queryParams) {
+    queryParams.minEmployees = Number(queryParams.minEmployees);
+  }
+  if ("maxEmployees" in queryParams) {
+    queryParams.maxEmployees = Number(queryParams.maxEmployees);
+  }
+  console.log("queryParams:", queryParams);
+  // validate properties and individual values
+  const validator = jsonschema.validate(
+    queryParams,
+    companyFilterSchema,
+    {required:true}
+  );
+  if (!validator.valid) {
+    const errs = validator.errors.map(e => e.stack);
+    throw new BadRequestError(errs);
+  }
 
-  isDataValid(req.query);
+  // validate min <= max if provided
+  if ("minEmployees" in queryParams && "maxEmployees" in queryParams) {
+    if (queryParams.minEmployees > queryParams.maxEmployees) {
+      throw new BadRequestError("minEmployees must be less than maxEmployees");
+    }
+  }
 
-  const companies = await Company.findAll(req.query);
+  const companies = await Company.findAll(queryParams);
   return res.json({ companies });
 });
 

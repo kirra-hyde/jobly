@@ -35,9 +35,9 @@ describe("sqlForPartialUpdate", function () {
       const dataToUpdate = {};
       const jsToSql = {};
       sqlForPartialUpdate(dataToUpdate, jsToSql);
-      throw new Error("fail test, you shouldn't get here");  //TODO: What happens if no expect triggered.
+      throw new Error("fail test, you shouldn't get here");
     } catch (err) {
-      expect(err instanceof BadRequestError).toBeTruthy();  //TODO: Ask about toBeTruthy
+      expect(err instanceof BadRequestError).toBeTruthy();
     }
   })
 
