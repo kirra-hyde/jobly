@@ -59,8 +59,9 @@ describe("create", function () {
 /************************************** findAll */
 
 describe("findAll", function () {
+  //TODO: Ask about how this test doesn't test real world scenario. Changed to pass empty object.
   test("works: no filter", async function () {
-    let companies = await Company.findAll();
+    let companies = await Company.findAll({});
     expect(companies).toEqual([
       {
         handle: "c1",

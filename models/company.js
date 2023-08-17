@@ -59,12 +59,14 @@ class Company {
 
   static async findAll(filter) {
 
+    console.log("filter is:", filter);
+
     // begin filtering logic
     let whereClause;
     let values = [];
 
     if (Object.keys(filter).length > 0) {
-      // console.log("filter was passed in:", filter)
+      console.log("filter was passed in:", filter)
       whereClause = 'WHERE ';
       let tokenNumber = 1;
 

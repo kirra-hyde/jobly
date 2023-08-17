@@ -22,20 +22,33 @@ describe("sqlForPartialUpdate", function () {
     });
   });
 
-  test("Fails: Empty update object (BadRequestError)", function () {
-    const dataToUpdate = {};
-    const jsToSql = {};
-    expect(() => {
-      sqlForPartialUpdate(dataToUpdate, jsToSql)
-    }).toThrow(BadRequestError);
-  });
+  // test("Fails: Empty update object (BadRequestError)", function () {
+  //   const dataToUpdate = {};
+  //   const jsToSql = {};
+  //   expect(() => {
+  //     sqlForPartialUpdate(dataToUpdate, jsToSql)
+  //   }).toThrow(BadRequestError);
+  // });
+
+  test("Fails: Empty update object (BadRequestError)", function() {
+    try {
+      const dataToUpdate = {};
+      const jsToSql = {};
+      sqlForPartialUpdate(dataToUpdate, jsToSql);
+      throw new Error("fail test, you shouldn't get here");  //TODO: What happens if no expect triggered.
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();  //TODO: Ask about toBeTruthy
+    }
+  })
 
   test("Fails: Argument missing (TypeError)", function () {
-    const dataToUpdate = {firstName: 'Aliya', age: 32};
-    //const jsToSql = {};
-    expect(() => {
-      sqlForPartialUpdate(dataToUpdate)
-    }).toThrow(TypeError);
-  });
+    try{
+      const dataToUpdate = {firstName: 'Aliya', age: 32};
+      sqlForPartialUpdate(dataToUpdate);
+      throw new Error("fail test, you shouldn't get here");
 
+    } catch (err) {
+      expect(err instanceof TypeError).toBeTruthy();
+    }
+  });
 });
