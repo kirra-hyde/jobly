@@ -342,6 +342,19 @@ describe("PATCH /users/:username", () => {
     expect(resp.statusCode).toEqual(401);
   });
 
+  test(
+    "unauth, not found and user is neither admin nor matches route",
+    async function () {
+      const resp = await request(app)
+          .patch(`/users/nope`)
+          .send({
+            firstName: "New",
+          })
+          .set("authorization", `Bearer ${u1Token}`);;
+      expect(resp.statusCode).toEqual(401);
+    }
+  );
+
   test("not found if no such user", async function () {
     const resp = await request(app)
         .patch(`/users/nope`)
@@ -351,8 +364,6 @@ describe("PATCH /users/:username", () => {
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
   });
-
-  // TODO: Test not found returns 401 if neither admin nor user
 
   test("bad request if invalid data", async function () {
     const resp = await request(app)
@@ -441,4 +452,14 @@ describe("DELETE /users/:username", function () {
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
   });
+
+  test(
+    "unauth, not found and user is neither admin nor matches route",
+    async function () {
+      const resp = await request(app)
+          .delete(`/users/nope`)
+          .set("authorization", `Bearer ${u1Token}`);
+      expect(resp.statusCode).toEqual(401);
+    }
+  );
 });
