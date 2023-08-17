@@ -55,12 +55,14 @@ function ensureAdmin(req, res, next) {
  *If not, raises Unauthorized.
 */
 function ensureCorrectUserOrAdmin(req, res, next) {
+  console.log("ensureCorrectUserOrAdminCalled");
   const routeUsername = req.params.username;
   const currentUser = res.locals.user;
 
   if (currentUser.username !== routeUsername && currentUser.isAdmin === false) {
     throw new UnauthorizedError();
   }
+  return next();
 }
 
 module.exports = {
