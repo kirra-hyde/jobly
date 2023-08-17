@@ -45,7 +45,7 @@ router.post(
     const token = createToken(user);
     return res.status(201).json({ user, token });
   }
-);      //TODO: What limits this to admins?
+);
 
 
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
@@ -72,6 +72,7 @@ router.get(
  * Authorization required: login
  **/
 
+// TODO: Missed ensureAdmin / right user here
 router.get("/:username", ensureLoggedIn, async function (req, res, next) {
   const user = await User.get(req.params.username);
   return res.json({ user });
@@ -88,6 +89,7 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: logged in and admin
  **/
 
+// TODO: Logic to check right user
 router.patch(
   "/:username",
   [ensureLoggedIn, ensureAdmin],
@@ -113,6 +115,7 @@ router.patch(
  * Authorization required: logged in and admin
  **/
 
+// TODO: Logic to check right user
 router.delete(
   "/:username",
   [ensureLoggedIn, ensureAdmin],

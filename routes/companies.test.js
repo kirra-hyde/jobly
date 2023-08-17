@@ -70,6 +70,10 @@ describe("POST /companies", function () {
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
   });
+
+  // TODO: We should test to confirm bad requests with non-admins
+  // still return 401s rather than bad data.
+
 });
 
 /************************************** GET /companies */

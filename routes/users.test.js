@@ -100,6 +100,9 @@ describe("POST /users", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
+  // TODO: We should test to confirm bad requests with non-admins
+  // still return 401s rather than bad data.
+
   test("bad request if missing data", async function () {
     const resp = await request(app)
         .post("/users")
