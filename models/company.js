@@ -63,7 +63,7 @@ class Company {
     let whereClause;
     let values = [];
 
-    if (filter) {
+    if (Object.keys(filter).length > 0) {
       // console.log("filter was passed in:", filter)
       whereClause = 'WHERE ';
       let tokenNumber = 1;
@@ -95,7 +95,15 @@ class Company {
       // console.log("final values:", values);
     }
     // end filtering logic
-
+    console.log("LOGGING SQL statemnt:", `
+    SELECT handle,
+           name,
+           description,
+           num_employees AS "numEmployees",
+           logo_url      AS "logoUrl"
+    FROM companies
+    ${whereClause || ''}
+    ORDER BY name`)
     const companiesRes = await db.query(`
         SELECT handle,
                name,
