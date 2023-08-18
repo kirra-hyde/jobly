@@ -17,6 +17,8 @@ class Job {
    * */
 
   static async create({ title, salary, equity, companyHandle}) {
+    console.log("job.create called w/ object:",
+      { title, salary, equity, companyHandle});
     const result = await db.query(`
                 INSERT INTO jobs (title,
                                   salary,
@@ -33,7 +35,7 @@ class Job {
       ]
     );
     const job = result.rows[0];
-
+    console.log("job result from insert:", job);
     return job;
   }
 
@@ -45,6 +47,15 @@ class Job {
    * */
 
   static async findAll(filter) {
+    const jobsRes = await db.query(`
+      SELECT id,
+             title,
+             salary,
+             equity,
+             company_handle as "companyHandle"
+      FROM jobs
+      ORDER BY title`);
+    return jobsRes.rows;
 
   }
 

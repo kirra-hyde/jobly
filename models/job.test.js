@@ -23,7 +23,7 @@ describe("create", function () {
     title: "new",
     salary: 500,
     equity: .7,
-    company_handle: "c1"
+    companyHandle: "c1"
   };
 
   test("works", async function () {
@@ -33,8 +33,8 @@ describe("create", function () {
       id: job.id,
       title: "new",
       salary: 500,
-      equity: .7,
-      company_handle: "c1"
+      equity: "0.7",
+      companyHandle: "c1"
     });
 
     const result = await db.query(
@@ -46,7 +46,7 @@ describe("create", function () {
         id: job.id,
         title: "new",
         salary: 500,
-        equity: .7,
+        equity: "0.7",
         company_handle: "c1"
       }
     ]);
@@ -56,10 +56,68 @@ describe("create", function () {
 /************************************** findAll */
 
 //works: no filter
+describe("findAll", function () {
+  test("works: no filter", async function () {
+    let jobs = await Job.findAll({});
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: 't1',
+        salary: 100000,
+        equity: '0',
+        companyHandle: 'c1'
+      },
+      {
+        id: expect.any(Number),
+        title: 't2',
+        salary: 50000,
+        equity: '0.1',
+        companyHandle: 'c2'
+      },
+      {
+        id: expect.any(Number),
+        title: 't3',
+        salary: 20000,
+        equity: '0.3',
+        companyHandle: 'c3'
+      },
+      {
+        id: expect.any(Number),
+        title: 't3',
+        salary: 20000,
+        equity: '0.3',
+        companyHandle: 'c3'
+      },
+      {
+        id: expect.any(Number),
+        title: 't4',
+        salary: null,
+        equity: null,
+        companyHandle: 'c1'
+      },
+    ]);
+  });
+});
 
 /************************************** findAll with filters */
 
-//works: search by title
+describe("find all with filters", function() {
+  //works: search by title
+  test("works: search by title t1", async function () {
+    const filters = {title: "t1"};
+    const results = await Job.findAll(filters);
+
+    expect(results).toEqual([
+      {
+        id: expect.any(Number),
+        title: 't1',
+        salary: 100000,
+        equity: '0',
+        companyHandle: 'c1'
+      }
+    ]);
+  });
+
 //works: search by title case insensitivity
 //works: search by part of title
 //works: search with title with space in it
@@ -72,6 +130,7 @@ describe("create", function () {
 //works: search by hasEquity === false
 
 //returns nothing all search filters where no match
+});
 
 /************************************** get */
 
