@@ -93,7 +93,7 @@ router.get(
  *
  * Returns { username, firstName, lastName, email, isAdmin }
  *
- * Authorization required: logged in and matching user or admin
+ * Authorization required: logged in user matching route or admin
  **/
 
 
@@ -119,7 +119,7 @@ router.patch(
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: logged in and matching user or admin
+ * Authorization required: logged in user matching route or admin
  **/
 router.delete(
   "/:username",

@@ -236,7 +236,7 @@ describe("GET /users/:username", function () {
         isAdmin: false, // note, test doesn't involve DB so this can be false
       },
     });
-  });
+  });  //TODO:  Better to make admin user and update other tests.
 
   test("unauth for anon", async function () {
     const resp = await request(app)
