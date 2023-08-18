@@ -47,16 +47,75 @@ class Job {
    * */
 
   static async findAll(filter) {
-    const jobsRes = await db.query(`
-      SELECT id,
-             title,
-             salary,
-             equity,
-             company_handle as "companyHandle"
-      FROM jobs
-      ORDER BY title`);
-    return jobsRes.rows;
 
+    // begin filtering logic
+    let whereClause;
+    let values = [];
+
+    if (Object.keys(filter).length > 0) {
+      console.log("filter was passed in:", filter)
+      whereClause = 'WHERE ';
+      let tokenNumber = 1;
+
+      for (let column in filter) {
+        let value = filter[column];
+
+        if (column === 'hasEquity') {
+          console.log("hasEquity filter found");
+          console.log("filter['hasEquity']:", filter['hasEquity']);
+        }
+
+        switch(column) {
+          case 'title':
+            if (tokenNumber > 1) {
+              whereClause += " AND ";
+            }
+            whereClause += `title ILIKE $${tokenNumber}`;
+            values.push(`%${value}%`);
+            break;
+          case 'minSalary':
+            if (tokenNumber > 1) {
+              whereClause += " AND ";
+            }
+            whereClause += `salary >= $${tokenNumber}`;
+            values.push(value);
+            break;
+          case 'hasEquity':
+            // check if it's true or false
+            if (filter['hasEquity'] === false) {
+              // it's false, so we check if it's the only condition
+              // if it is, then we clear out the where clause
+              if (whereClause === 'WHERE ') whereClause = '';
+            } else if (filter['hasEquity'] === true) {
+              if (tokenNumber > 1) {
+                whereClause += " AND ";
+              }
+              whereClause += `equity > 0`;
+            }
+            break;
+        }
+        tokenNumber++;
+      }
+    }
+    // end filtering logic
+
+    console.log("final where clause:", whereClause);
+    console.log("final values:", values);
+
+    const sqlStatement = `
+      SELECT id,
+            title,
+            salary,
+            equity,
+            company_handle AS "companyHandle"
+      FROM jobs
+      ${whereClause || ''}
+      ORDER BY title`
+
+    console.log("sql statement:", sqlStatement);
+
+    const jobsRes = await db.query(sqlStatement, values);
+    return jobsRes.rows;
   }
 
 
