@@ -100,9 +100,6 @@ describe("POST /users", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  // TODO: We should test to confirm bad requests with non-admins
-  // still return 401s rather than bad data.
-
   test("bad request if missing data", async function () {
     const resp = await request(app)
         .post("/users")
@@ -126,6 +123,21 @@ describe("POST /users", function () {
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
+  });
+
+  test("unauth for non-admin with invalid data", async function () {
+    const resp = await request(app)
+        .post("/users")
+        .send({
+          username: "u-new",
+          firstName: "First-new",
+          lastName: "Last-newL",
+          password: "password-new",
+          email: "not-an-email",
+          isAdmin: true,
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 });
 
@@ -180,7 +192,7 @@ describe("GET /users", function () {
 /************************************** GET /users/:username */
 
 describe("GET /users/:username", function () {
-  test("works for users", async function () {
+  test("works for non-admin user matching route", async function () {
     const resp = await request(app)
         .get(`/users/u1`)
         .set("authorization", `Bearer ${u1Token}`);
@@ -207,6 +219,13 @@ describe("GET /users/:username", function () {
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(404);
   });
+
+  //works, user is admin but not user matching route.
+  //works, user is admin and matches route.
+  //fails, user is neither admin nor matches route.
+  //fails, user not found and user not admin nor matching route.
+
+
 });
 
 /************************************** PATCH /users/:username */

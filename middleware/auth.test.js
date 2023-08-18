@@ -5,7 +5,8 @@ const { UnauthorizedError } = require("../expressError");
 const {
   authenticateJWT,
   ensureLoggedIn,
-  ensureAdmin
+  ensureAdmin,
+  ensureCorrectUserOrAdmin
 } = require("./auth");
 
 
@@ -85,6 +86,46 @@ describe("ensureAdmin", function () {
     const req = {};
     const res = { locals: { user: { isAdmin: false } } };
     expect(() => ensureAdmin(req, res, next))
+      .toThrow(UnauthorizedError);
+  });
+
+});
+
+describe("ensureCorrectUserOrAdmin", function () {
+  test("works, user for route is user", function () {
+    const req = { params: { username: "testUsername" } };
+    const res = { locals: { user: {
+      username: "testUsername",
+      isAdmin: false
+    } } };
+    ensureCorrectUserOrAdmin(req, res, next);
+  });
+
+  test("works, user is admin", function () {
+    const req = { params: { username: "testUsername" } };
+    const res = { locals: { user: {
+      username: "adminUsername",
+      isAdmin: true
+    } } };
+    ensureCorrectUserOrAdmin(req, res, next);
+  });
+
+  test("works, user is admin and user for route", function () {
+    const req = { params: { username: "testUsername" } };
+    const res = { locals: { user: {
+      username: "testUsername",
+      isAdmin: true
+    } } };
+    ensureCorrectUserOrAdmin(req, res, next);
+  });
+
+  test("fails, user neither admin not user for route", function () {
+    const req = { params: { username: "testUsername1" } };
+    const res = { locals: { user: {
+      username: "testUsername2",
+      isAdmin: false
+    } } };
+    expect(() => ensureCorrectUserOrAdmin(req, res, next))
       .toThrow(UnauthorizedError);
   });
 
